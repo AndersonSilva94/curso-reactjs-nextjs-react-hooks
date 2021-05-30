@@ -13,7 +13,7 @@ Nessa seção introduziremos a Context API e os hooks useContext e useReducer, q
 - [x] Configuração de projeto (eslint, prettier, editorconfig, prop-types)
 - [x] useState;
 - [x] useEffect;
-- [ ] useCallback;
+- [x] useCallback;
 - [ ] useMemo;
 - [ ] useRef;
 - [ ] useContext;
