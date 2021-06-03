@@ -1,34 +1,51 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-const Button = React.memo(function Button({ incrementButton }) {
+const Post = ({ post }) => {
   console.log('Filho renderizou');
-  return <button onClick={() => incrementButton(10)}>+</button>;
-}); // React.memo salva a estrutura do componente e caso ele não mude, o componente não será re-renderizado.
+  return (
+    <div key={post.id} className="post">
+      <h1>{post.title}</h1>
+      <p>{post.body}</p>
+    </div>
+  );
+};
 
 function App() {
-  const [counter, setCounter] = useState(0);
-
-  const incrementCounter = useCallback((num) => {
-    setCounter((counter) => counter + 1);
-  }, []);
-  //useCallback salva o estado da função e só re-renderiza a mesma caso esta tenha sofrido algum alteração, sendo assim, o uso de depedências é altamente desaconselhável
-
+  const [posts, setPosts] = useState([]);
+  const [value, setValue] = useState('');
   console.log('Pai renderizou');
+
+  //componentDidMount
+  useEffect(() => {
+    setTimeout(() => {
+      fetch('https://jsonplaceholder.typicode.com/posts')
+        .then((r) => r.json())
+        .then((r) => setPosts(r));
+    }, 5000);
+  }, []);
 
   return (
     <div className="App">
-      <p>Teste</p>
-      <h1>Contador: {counter}</h1>
-      <Button incrementButton={incrementCounter} />
+      <p>
+        <input type="search" value={value} onChange={(e) => setValue(e.target.value)} />
+      </p>
+      {useMemo(() => {
+        return posts.length > 0 && posts.map((post) => <Post key={post.id} post={post} />);
+      }, [posts])}
+      {posts.length <= 0 && <p>Ainda não existem posts.</p>}
     </div>
   );
 }
 
-Button.propTypes = {
-  incrementButton: PropTypes.func,
+Post.propTypes = {
+  post: PropTypes.shape({
+    id: PropTypes.number,
+    title: PropTypes.string,
+    body: PropTypes.string,
+  }).isRequired,
 };
 
 // **************************************************************************
@@ -103,7 +120,7 @@ Button.propTypes = {
 } */
 
 // ***********************************************************************
-// aula sobre useEffect
+// aula sobre useEffect()
 /* const eventFn = () => {
   console.log('Primeiro h1 clicado');
 };
@@ -142,5 +159,35 @@ function App() {
     </div>
   );
 } */
+
+//************************************************************************
+// aula sobre useCallback()
+/* const Button = React.memo(function Button({ incrementButton }) {
+  console.log('Filho renderizou');
+  return <button onClick={() => incrementButton(10)}>+</button>;
+}); // React.memo salva a estrutura do componente e caso ele não mude, o componente não será re-renderizado.
+
+function App() {
+  const [counter, setCounter] = useState(0);
+
+  const incrementCounter = useCallback((num) => {
+    setCounter((counter) => counter + 1);
+  }, []);
+  //useCallback salva o estado da função e só re-renderiza a mesma caso esta tenha sofrido algum alteração, sendo assim, o uso de depedências é altamente desaconselhável
+
+  console.log('Pai renderizou');
+
+  return (
+    <div className="App">
+      <p>Teste</p>
+      <h1>Contador: {counter}</h1>
+      <Button incrementButton={incrementCounter} />
+    </div>
+  );
+}
+
+Button.propTypes = {
+  incrementButton: PropTypes.func,
+}; */
 
 export default App;
