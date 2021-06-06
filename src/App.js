@@ -1,70 +1,17 @@
-import PropTypes from 'prop-types';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import logo from './logo.svg';
+/* import PropTypes from 'prop-types';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import logo from './logo.svg'; */
 import './App.css';
-
-const Post = ({ post, handleClick }) => {
-  console.log('Filho renderizou');
-  return (
-    <div key={post.id} className="post">
-      <h1 style={{ fontSize: '14px' }} onClick={() => handleClick(post.title)}>
-        {post.title}
-      </h1>
-      <p>{post.body}</p>
-    </div>
-  );
-};
+import { AppContext } from './contexts/AppContext';
+import { Div } from './components/Div';
 
 function App() {
-  const [posts, setPosts] = useState([]);
-  const [value, setValue] = useState('');
-  const input = useRef(null);
-  const contador = useRef(0);
-
-  console.log('Pai renderizou');
-
-  //componentDidMount
-  useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/posts')
-      .then((r) => r.json())
-      .then((r) => setPosts(r));
-  }, []);
-
-  useEffect(() => {
-    input.current.focus();
-    console.log(input.current);
-  }, [value]);
-
-  useEffect(() => {
-    contador.current++;
-  });
-
-  const handleClick = (value) => {
-    setValue(value);
-  };
-
   return (
-    <div className="App">
-      <h6>Renderizou: {contador.current}x</h6>
-      <p>
-        <input ref={input} type="search" value={value} onChange={(e) => setValue(e.target.value)} />
-      </p>
-      {useMemo(() => {
-        return posts.length > 0 && posts.map((post) => <Post key={post.id} post={post} handleClick={handleClick} />);
-      }, [posts])}
-      {posts.length <= 0 && <p>Ainda não existem posts.</p>}
-    </div>
+    <AppContext>
+      <Div />
+    </AppContext>
   );
 }
-
-Post.propTypes = {
-  post: PropTypes.shape({
-    id: PropTypes.number,
-    title: PropTypes.string,
-    body: PropTypes.string,
-  }).isRequired,
-  handleClick: PropTypes.func,
-};
 
 // **************************************************************************
 // como o componente é montado através de classes
@@ -254,5 +201,128 @@ Post.propTypes = {
     body: PropTypes.string,
   }).isRequired,
 }; */
+
+// ************************************************************************
+// aula sobre useRef()
+/* const Post = ({ post, handleClick }) => {
+  console.log('Filho renderizou');
+  return (
+    <div key={post.id} className="post">
+      <h1 style={{ fontSize: '14px' }} onClick={() => handleClick(post.title)}>
+        {post.title}
+      </h1>
+      <p>{post.body}</p>
+    </div>
+  );
+};
+
+function App() {
+  const [posts, setPosts] = useState([]);
+  const [value, setValue] = useState('');
+  const input = useRef(null);
+  const contador = useRef(0);
+
+  console.log('Pai renderizou');
+
+  //componentDidMount
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/posts')
+      .then((r) => r.json())
+      .then((r) => setPosts(r));
+  }, []);
+
+  useEffect(() => {
+    input.current.focus();
+    console.log(input.current);
+  }, [value]);
+
+  useEffect(() => {
+    contador.current++;
+  });
+
+  const handleClick = (value) => {
+    setValue(value);
+  };
+
+  return (
+    <div className="App">
+      <h6>Renderizou: {contador.current}x</h6>
+      <p>
+        <input ref={input} type="search" value={value} onChange={(e) => setValue(e.target.value)} />
+      </p>
+      {useMemo(() => {
+        return posts.length > 0 && posts.map((post) => <Post key={post.id} post={post} handleClick={handleClick} />);
+      }, [posts])}
+      {posts.length <= 0 && <p>Ainda não existem posts.</p>}
+    </div>
+  );
+}
+
+Post.propTypes = {
+  post: PropTypes.shape({
+    id: PropTypes.number,
+    title: PropTypes.string,
+    body: PropTypes.string,
+  }).isRequired,
+  handleClick: PropTypes.func,
+}; */
+
+// *************************************************************************
+// aula sobre useContext() - parte 1
+/* const globalState = {
+  title: 'O título do contexto',
+  body: 'O body do contexto',
+  counter: 0,
+};
+
+const GlobalContext = React.createContext();
+
+// desabilitar eslint em uma linha específica
+// eslint-disable-next-line
+const Div = ({ children }) => {
+  return (
+    <>
+      <H1 />
+      <P />
+    </>
+  );
+};
+
+// desabilitar eslint em uma linha específica
+// eslint-disable-next-line
+const H1 = ({ children }) => {
+  const theContext = useContext(GlobalContext);
+  const {
+    contextState: { title, counter },
+  } = theContext;
+  return (
+    <h1>
+      {title} {counter}
+    </h1>
+  );
+};
+
+// desabilitar eslint em uma linha específica
+// eslint-disable-next-line
+const P = ({ children }) => {
+  const theContext = useContext(GlobalContext);
+  const {
+    contextState: { body, counter },
+    contextState,
+    setContextState,
+  } = theContext;
+  // return <p onClick={() => setContextState({ ...contextState, counter: counter + 1 })}>{body}</p>;
+  return <p onClick={() => setContextState((s) => ({ ...s, counter: s.counter + 1 }))}>{body}</p>;
+};
+
+function App() {
+  const [contextState, setContextState] = useState(globalState);
+
+  return (
+    <GlobalContext.Provider value={{ contextState, setContextState }}>
+      <Div />
+    </GlobalContext.Provider>
+  );
+} */
 
 export default App;
