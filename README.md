@@ -16,7 +16,7 @@ Nessa seção introduziremos a Context API e os hooks useContext e useReducer, q
 - [x] useCallback;
 - [x] useMemo;
 - [x] useRef;
-- [ ] useContext;
+- [x] useContext;
 - [ ] useReducer;
 - [ ] Organização de useEffect, useReducer, useContext e useRef;
 - [ ] Criação de hooks
