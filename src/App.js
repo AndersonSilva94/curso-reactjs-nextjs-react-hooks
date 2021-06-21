@@ -1,15 +1,59 @@
 /* import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import logo from './logo.svg'; */
+import { useReducer } from 'react';
 import './App.css';
-import { AppContext } from './contexts/AppContext';
-import { Div } from './components/Div';
+
+const globalState = {
+  title: 'O título do contexto',
+  body: 'O body do contexto',
+  counter: 0,
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'COUNTER':
+      return { ...state, title: 'Mudou' };
+    case 'INVERT': {
+      const { title } = state;
+      return {
+        ...state,
+        title: title.split('').reverse().join(''),
+      };
+    }
+    case 'GET_DATE':
+      return {
+        ...state,
+        title: action.payload,
+      };
+  }
+  return { ...state };
+};
 
 function App() {
+  //primeiro parâmetro: função de reducer, segundo parâmetro: estado inicial
+  // retorna o estado que foi passado com estado inicial, e uma função de dispatch que será usada quando uma ação for realizada
+  const [state, dispatch] = useReducer(reducer, globalState);
+  const { counter, title, body } = state;
+
   return (
-    <AppContext>
-      <Div />
-    </AppContext>
+    <div>
+      <h1>
+        {title} {counter}
+      </h1>
+      <button onClick={() => dispatch({ type: 'COUNTER' })}>Click</button>
+      <button onClick={() => dispatch({ type: 'INVERT' })}>Invert</button>
+      <button
+        onClick={() =>
+          dispatch({
+            type: 'GET_DATE',
+            payload: new Date().toLocaleString('pt-BR'),
+          })
+        }
+      >
+        Get Date
+      </button>
+    </div>
   );
 }
 
@@ -322,6 +366,19 @@ function App() {
     <GlobalContext.Provider value={{ contextState, setContextState }}>
       <Div />
     </GlobalContext.Provider>
+  );
+} */
+
+// **********************************************************************
+// aula sobre useContext() - parte 2
+/* import { AppContext } from './contexts/AppContext';
+import { Div } from './components/Div';
+
+function App() {
+  return (
+    <AppContext>
+      <Div />
+    </AppContext>
   );
 } */
 
