@@ -1,59 +1,70 @@
 /* import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import logo from './logo.svg'; */
-import { useReducer } from 'react';
+import PropTypes from 'prop-types';
+import { createContext, useContext, useReducer, useRef } from 'react';
 import './App.css';
 
-const globalState = {
+// actions.js
+export const actions = {
+  CHANGE_TITLE: 'CHANGE_TITLE',
+};
+
+// data.js
+export const globalState = {
   title: 'O título do contexto',
   body: 'O body do contexto',
   counter: 0,
 };
 
-const reducer = (state, action) => {
+// reducer.js
+export const reducer = (state, action) => {
   switch (action.type) {
-    case 'COUNTER':
-      return { ...state, title: 'Mudou' };
-    case 'INVERT': {
-      const { title } = state;
-      return {
-        ...state,
-        title: title.split('').reverse().join(''),
-      };
+    case actions.CHANGE_TITLE: {
+      console.log('Muda título');
+      return { ...state, title: action.payload };
     }
-    case 'GET_DATE':
-      return {
-        ...state,
-        title: action.payload,
-      };
   }
   return { ...state };
 };
 
-function App() {
-  //primeiro parâmetro: função de reducer, segundo parâmetro: estado inicial
-  // retorna o estado que foi passado com estado inicial, e uma função de dispatch que será usada quando uma ação for realizada
+// AppContext.jsx
+export const Context = createContext();
+export const AppContext = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, globalState);
-  const { counter, title, body } = state;
+
+  const changeTitle = (payload) => {
+    dispatch({ type: actions.CHANGE_TITLE, payload });
+  };
+
+  return <Context.Provider value={{ state, changeTitle }}>{children}</Context.Provider>;
+};
+
+AppContext.propTypes = {
+  children: PropTypes.node,
+};
+
+// H1/index.jsx
+export const H1 = () => {
+  const context = useContext(Context);
+  const inputRef = useRef();
 
   return (
-    <div>
-      <h1>
-        {title} {counter}
-      </h1>
-      <button onClick={() => dispatch({ type: 'COUNTER' })}>Click</button>
-      <button onClick={() => dispatch({ type: 'INVERT' })}>Invert</button>
-      <button
-        onClick={() =>
-          dispatch({
-            type: 'GET_DATE',
-            payload: new Date().toLocaleString('pt-BR'),
-          })
-        }
-      >
-        Get Date
-      </button>
-    </div>
+    <>
+      <h1 onClick={() => context.changeTitle(inputRef.current.value)}>{context.state.title}</h1>
+      <input type="text" ref={inputRef} />
+    </>
+  );
+};
+
+// App.jsx
+function App() {
+  return (
+    <AppContext>
+      <div>
+        <H1 />
+      </div>
+    </AppContext>
   );
 }
 
@@ -379,6 +390,61 @@ function App() {
     <AppContext>
       <Div />
     </AppContext>
+  );
+} */
+
+// **********************************************************************
+// aula sobre useReducer()
+/* const globalState = {
+  title: 'O título do contexto',
+  body: 'O body do contexto',
+  counter: 0,
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'COUNTER':
+      return { ...state, title: 'Mudou' };
+    case 'INVERT': {
+      const { title } = state;
+      return {
+        ...state,
+        title: title.split('').reverse().join(''),
+      };
+    }
+    case 'GET_DATE':
+      return {
+        ...state,
+        title: action.payload,
+      };
+  }
+  return { ...state };
+};
+
+function App() {
+  //primeiro parâmetro: função de reducer, segundo parâmetro: estado inicial
+  // retorna o estado que foi passado com estado inicial, e uma função de dispatch que será usada quando uma ação for realizada
+  const [state, dispatch] = useReducer(reducer, globalState);
+  const { counter, title, body } = state;
+
+  return (
+    <div>
+      <h1>
+        {title} {counter}
+      </h1>
+      <button onClick={() => dispatch({ type: 'COUNTER' })}>Click</button>
+      <button onClick={() => dispatch({ type: 'INVERT' })}>Invert</button>
+      <button
+        onClick={() =>
+          dispatch({
+            type: 'GET_DATE',
+            payload: new Date().toLocaleString('pt-BR'),
+          })
+        }
+      >
+        Get Date
+      </button>
+    </div>
   );
 } */
 
