@@ -1,3 +1,5 @@
+// **********************************************************************
+// aula sobre useContext() - parte 2
 import { useContext } from 'react';
 import { GlobalContext } from '../../contexts/AppContext';
 

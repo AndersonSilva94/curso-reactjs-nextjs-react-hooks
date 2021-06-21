@@ -1,3 +1,5 @@
+// **********************************************************************
+// aula sobre useContext() - parte 2
 import React, { useState } from 'react';
 import { globalState } from './data';
 
