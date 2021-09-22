@@ -1,6 +1,7 @@
 // import PropTypes from 'prop-types';
 import React, { createContext, useContext, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import Posts from '../../components/Posts';
+import CounterProvider from '../../contexts/CounterContext';
 import { PostsProvider } from '../../contexts/PostsContext';
 import './styles.css';
 // import PropTypes from 'prop-types';
@@ -8,11 +9,13 @@ import './styles.css';
 
 function App() {
   return (
-    <PostsProvider>
-      <div>
-        <Posts />
-      </div>
-    </PostsProvider>
+    <CounterProvider>
+      <PostsProvider>
+        <div>
+          <Posts />
+        </div>
+      </PostsProvider>
+    </CounterProvider>
   );
 }
 
