@@ -1,46 +1,29 @@
-import { useEffect, useState } from 'react';
-import { useFecth } from './use-fetch';
+import React, { useEffect, useState } from 'react';
+import useAsync from './use-async';
+
+const fetchData = async () => {
+  const data = await fetch('https://jsonplaceholder.typicode.com/users/');
+  const json = await data.json();
+  return json;
+};
 
 function Home() {
-  const [postId, setPostId] = useState('');
-  const [result, loading] = useFecth('https://jsonplaceholder.typicode.com/users/' + postId, {
-    headers: {
-      abc: '2000000',
-    },
-  });
+  const [posts, setPosts] = useState(null);
+  const [reFetchData, result, error, status] = useAsync(fetchData, true);
 
-  useEffect(() => {
-    console.log('ID do user', postId);
-  }, [postId]);
-
-  const handleClick = (id) => {
-    setPostId(id);
-  };
-
-  if (loading) return <h1>Loading...</h1>;
-  if (!loading && result) {
-    return (
-      <div>
-        {result?.length > 0 ? (
-          result.map((elem) => (
-            <div key={`user-${elem.id}`} onClick={() => handleClick(elem.id)}>
-              <p>{elem.name}</p>
-            </div>
-          ))
-        ) : (
-          <div onClick={() => handleClick('')}>
-            <p>{result.name}</p>
-          </div>
-        )}
-      </div>
-    );
+  if (status === 'idle') {
+    return <pre>Nada executando</pre>;
   }
-
-  return (
-    <div>
-      <h1>Olá Mundo</h1>
-    </div>
-  );
+  if (status === 'pending') {
+    return <pre>Loading...</pre>;
+  }
+  if (status === 'error') {
+    return <pre>{JSON.stringify(error, null, 2)}</pre>;
+  }
+  if (status === 'settled') {
+    return <pre>{JSON.stringify(result, null, 2)}</pre>;
+  }
+  return 'IXIII';
 }
 
 export default Home;
